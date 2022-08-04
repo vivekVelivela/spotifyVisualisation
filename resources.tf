@@ -1,11 +1,11 @@
 resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
-  name              = "/aws/lambda/${var.project_name}_get_leaderboard_${var.env}"
+  name              = "/aws/lambda/${var.name}"
   retention_in_days = 14
 }
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
   source_dir = "/Data"
-  output_path = "tmp/zip_files/getLeaderBoard.zip"
+  output_path = "tmp/zip_files/Lambda.zip"
 }
  
 resource "aws_lambda_function" "extract_data_lambda_func" {
