@@ -5,7 +5,14 @@ terraform {
       version = "~> 3.27"
     }
   }
+backend "remote" {
+  organisation = "vivek-personal"
 
+  workspaces {
+    name = "spotifyVisualisation"
+  }
+  
+}
   required_version = ">= 0.14.9"
 }
 
