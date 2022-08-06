@@ -6,7 +6,7 @@ terraform {
     }
   }
 backend "remote" {
-  organisation = "vivek-personal"
+  organization = "vivek-personal"
 
   workspaces {
     name = "spotifyVisualisation"

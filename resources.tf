@@ -4,7 +4,7 @@ resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
 }
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
-  source_dir = "/Data"
+  source_dir = "Lambda/"
   output_path = "tmp/zip_files/Lambda.zip"
 }
  
@@ -19,6 +19,7 @@ depends_on                     = [aws_iam_role_policy_attachment.attach_iam_poli
 
 resource "aws_secretsmanager_secret" "spotify_credential_secret" {
   name = "${var.project_name}_spotifySecret"
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "spotify_credential_sversion" {
@@ -29,4 +30,17 @@ resource "aws_secretsmanager_secret_version" "spotify_credential_sversion" {
     "client_secret": "${var.client_secret}"
    }
 EOF
+}
+
+data "aws_secretsmanager_secret" "spotify_credential_secret" {
+  arn = aws_secretsmanager_secret.spotify_credential_secret.arn
+}
+ 
+# Importing the AWS secret version created previously using arn.
+ 
+data "aws_secretsmanager_secret_version" "spotify_creds" {
+  secret_id = data.aws_secretsmanager_secret.spotify_credential_secret.arn
+  depends_on = [aws_secretsmanager_secret_version.spotify_credential_sversion,
+  aws_secretsmanager_secret.spotify_credential_secret
+  ]
 }
