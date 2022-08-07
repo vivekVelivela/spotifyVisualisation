@@ -18,3 +18,23 @@ resource "aws_iam_policy" "lambda_policy" {
 }
 EOF
 }
+
+resource "aws_iam_policy" "lambda_secret_policy" {
+  name        = "lambda_secret_policy"
+  description = ""
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": "arn:aws:secretsmanager:*:*:*:*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+

@@ -15,6 +15,12 @@ role                           = aws_iam_role.lambda_role.arn
 handler                        = "index.lambda_handler"
 runtime                        = "python3.8"
 depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
+environment {
+    variables = {
+      SECRET_ARN = aws_secretsmanager_secret.spotify_credential_secret.arn,
+      AWS_REGION = "ap-southeast-2"
+    }
+}
 }
 
 resource "aws_secretsmanager_secret" "spotify_credential_secret" {
