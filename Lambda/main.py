@@ -1,6 +1,6 @@
 import boto3
 import os
-from datetime import datetime
+import datetime 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from resources import Secret
@@ -30,10 +30,11 @@ class Authentication():
         return "client_id is %s,client_secret is %s" % (self.client_id, self.client_secret)
 
 class data():
-    # def __init__(self):
+    def __init__(self):
+        self.secret =  Secret()
 
     def auth(self):
-        authenticate = Authentication(,)
+        authenticate = Authentication(self.secret.client_id,self.secret.client_secret)
         return authenticate
     
     def get_auth(self):
@@ -42,8 +43,14 @@ class data():
     
     def get_playlists(self,country_code):
         auth = self.get_auth()
-        for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']:
-            print(i['uri'])
-
+        return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
+        
     def get_artist(self,artist_id):
         auth = self.get_auth()
+
+def main():
+    data().get_playlists('IN')
+
+if __name__ == "__main__":
+    main()
+    
