@@ -6,6 +6,8 @@ data "archive_file" "zip_the_python_code" {
   depends_on = [null_resource.install_dependencies]
   excludes   = [
     "venv",
+    "__pycache__",
+    "core/__pycache__",
     "requirements.txt"
   ]
 
@@ -43,7 +45,7 @@ filename                       = data.archive_file.zip_the_python_code.output_pa
 function_name                  = "extract_data"
 role                           = aws_iam_role.lambda_role.arn
 handler                        = "index.lambda_handler"
-runtime                        = "python3.8"
+runtime                        = "python3.7"
 source_code_hash               = filebase64sha256("${data.archive_file.zip_the_python_code.output_path}")
 depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
 environment {
