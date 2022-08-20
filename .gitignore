@@ -213,6 +213,7 @@ csx/
 ecf/
 rcf/
 tmp
+tmp/zip_files
 
 # Windows Store app package directories and files
 AppPackages/
