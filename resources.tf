@@ -16,7 +16,7 @@ data "archive_file" "zip_the_python_code" {
 
 resource "null_resource" "install_dependencies" {
   provisioner "local-exec" {
-    command = "pip install -r ${var.lambda_root}/requirements.txt -t ${var.lambda_root}/"
+    command = "pip3 install -r ${var.lambda_root}/requirements.txt -t ${var.lambda_root}/"
   }
   
   triggers = {
