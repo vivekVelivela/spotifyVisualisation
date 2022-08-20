@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.27"
+      version = "~> 3.74.2"
     }
   }
 backend "remote" {
@@ -20,4 +20,5 @@ backend "remote" {
 
 provider "aws" {
   region = var.region
+  profile = "vivek-personal-iam-user"
 }
