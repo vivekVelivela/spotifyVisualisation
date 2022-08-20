@@ -27,7 +27,7 @@ class Authentication():
         return "<Test a:%s b:%s>" % (self.client_id, self.client_secret)
 
     def __str__(self):
-        return "client_id is %s,client_secret is %s" % (self.client_id, self.client_secret)
+        return "client_id is %s, and client_secret is %s" % (self.client_id, self.client_secret)
 
 class data():
     def __init__(self):
