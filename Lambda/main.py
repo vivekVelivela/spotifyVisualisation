@@ -4,7 +4,7 @@ import datetime
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from resources import Secret
-def handler(event, context):
+def lambda_handler(event, context):
     
 
     return {

@@ -44,7 +44,7 @@ resource "aws_lambda_function" "extract_data_lambda_func" {
 filename                       = data.archive_file.zip_the_python_code.output_path
 function_name                  = "extract_data"
 role                           = aws_iam_role.lambda_role.arn
-handler                        = "index.lambda_handler"
+handler                        = "main.lambda_handler"
 runtime                        = "python3.7"
 source_code_hash               = filebase64sha256("${data.archive_file.zip_the_python_code.output_path}")
 depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
