@@ -7,6 +7,7 @@ data "archive_file" "zip_the_python_code" {
   excludes   = [
     "__pycache__",
     "venv",
+    "requirements.txt"
   ]
 
   source_dir  = var.lambda_root
@@ -22,6 +23,7 @@ resource "null_resource" "install_dependencies" {
   triggers = {
     dependencies_versions = filemd5("${var.lambda_root}/requirements.txt")
     source_versions = filemd5("${var.lambda_root}/main.py")
+    source_code_hash = random_uuid.lambda_src_hash.result
   }
 }
 
@@ -29,7 +31,9 @@ resource "random_uuid" "lambda_src_hash" {
   keepers = {
     for filename in setunion(
       fileset(var.lambda_root, "function.py"),
-      fileset(var.lambda_root, "requirements.txt")
+      fileset(var.lambda_root, "requirements.txt"),
+      fileset(var.lambda_root, "resources.py")
+
     ):
         filename => filemd5("${var.lambda_root}/${filename}")
   }
@@ -41,6 +45,7 @@ function_name                  = "extract_data"
 role                           = aws_iam_role.lambda_role.arn
 handler                        = "index.lambda_handler"
 runtime                        = "python3.8"
+source_code_hash               = data.archive_file.zip_the_python_code.output_base64sha256
 depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
 environment {
     variables = {

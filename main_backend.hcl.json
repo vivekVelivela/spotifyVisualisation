@@ -1,9 +1,0 @@
-{
-    "workspaces": [
-        {
-            "name": "spotifyVisualisation"
-        }
-    ],
-    "hostname": "app.terraform.io",
-    "organization": "vivek-personal"
-}
