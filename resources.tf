@@ -21,7 +21,7 @@ resource "null_resource" "install_dependencies" {
   
   triggers = {
     dependencies_versions = filemd5("${var.lambda_root}/requirements.txt")
-    source_versions = filemd5("${var.lambda_root}/function.py")
+    source_versions = filemd5("${var.lambda_root}/main.py")
   }
 }
 
