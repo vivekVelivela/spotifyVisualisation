@@ -14,3 +14,9 @@ variable "client_secret" {
 variable "region"{
   type = string
 }
+
+variable "lambda_root" {
+  type        = string
+  description = "The relative path to the source of the Lambda function"
+  default     = "../Lambda"
+}
