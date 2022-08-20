@@ -18,7 +18,7 @@ data "archive_file" "zip_the_python_code" {
 
 resource "null_resource" "install_dependencies" {
   provisioner "local-exec" {
-    command = "pip install -r ${var.lambda_root}/requirements.txt -t ${var.lambda_root}/ --upgrade"
+    command = "pip install -r ${var.lambda_root}/requirements.txt --no-deps --ignore-installed -t ${var.lambda_root}/ --upgrade"
   }
   
   triggers = {
