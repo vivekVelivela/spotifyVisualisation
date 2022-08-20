@@ -5,7 +5,6 @@ resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
 data "archive_file" "zip_the_python_code" {
   depends_on = [null_resource.install_dependencies]
   excludes   = [
-    "__pycache__",
     "venv",
     "requirements.txt"
   ]
@@ -30,9 +29,9 @@ resource "null_resource" "install_dependencies" {
 resource "random_uuid" "lambda_src_hash" {
   keepers = {
     for filename in setunion(
-      fileset(var.lambda_root, "function.py"),
+      fileset(var.lambda_root, "*.py"),
       fileset(var.lambda_root, "requirements.txt"),
-      fileset(var.lambda_root, "resources.py")
+      fileset(var.lambda_root, "core/**/*.py")
 
     ):
         filename => filemd5("${var.lambda_root}/${filename}")
