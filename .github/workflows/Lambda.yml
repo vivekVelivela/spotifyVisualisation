@@ -12,7 +12,7 @@ jobs:
   deploy-main:
     name: 'Deploy main'
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/main'
     environment: main
 
     defaults:
