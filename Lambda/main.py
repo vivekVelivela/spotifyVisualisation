@@ -1,11 +1,12 @@
 import boto3
 import os
+import json
 import datetime 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from resources import Secret
 def lambda_handler(event, context):
-    
+    main()
 
     return {
                 "statusCode": 200,
@@ -47,9 +48,25 @@ class data():
         
     def get_artist(self,artist_id):
         auth = self.get_auth()
+    
+    def playlist(self, playlist_id):
+        data_array = []
+        dataset = {}
+        auth = self.get_auth()
+        for i in playlist_id:
+          dataset['name'] =   auth.playlist(i)['name']
+          dataset['followers'] =  auth.playlist(i)['followers']['total']
+          data_array.append(dataset)
+        print(data_array)
+        with open(r'C:\Users\VivekVelivela\Desktop\Data Viz project\Data\Data.js', 'w') as file:
+            file.write('export const UserData = %s;'% json.dumps(data_array))
+
+
+            
+
 
 def main():
-    data().get_playlists('IN')
+    data().playlist(data().get_playlists('IN'))
 
 if __name__ == "__main__":
     main()
