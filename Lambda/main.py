@@ -54,10 +54,8 @@ class data():
         dataset = {}
         auth = self.get_auth()
         for i in playlist_id:
-          dataset['name'] =   auth.playlist(i)['name']
-          dataset['followers'] =  auth.playlist(i)['followers']['total']
-          data_array.append(dataset)
-        print(data_array)
+            dataset = {'name':auth.playlist(i)['name'], 'followers': auth.playlist(i)['followers']['total']}
+            data_array.append(dataset)
         with open(r'C:\Users\VivekVelivela\Desktop\Data Viz project\Data\Data.js', 'w') as file:
             file.write('export const UserData = %s;'% json.dumps(data_array))
 
