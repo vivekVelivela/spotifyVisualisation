@@ -1,3 +1,4 @@
+import traceback
 import boto3
 import os
 import json
@@ -66,21 +67,22 @@ class data:
         return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
     
 
-    # def get_artist(self, playlist_id):
-        # # playlist_array = []
-        # # playlist = {}
-        # auth = self.get_auth()
-        # print(auth.artist('2JSYASbWU5Y0fVpts3Eq7g'))
-        # artist_array = []
-        # auth = self.get_auth()
-        # for i in playlist_id:
-        #     artist_array.append([[k['artist']['name'],k['artist']['popularity']] for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
-        # flatlist=[element for sublist in artist_array for element in sublist]
-        # df = pd.DataFrame(flatlist, columns = ['track', 'popularity']).drop_duplicates(subset=['track']).sort_values(by = ['popularity'], ascending=False)
-        # df_new = df.head(10)
-        # return df_new.to_dict(orient='records')
+    def get_artist_id(self, playlist_id):
+        artist_df = pd.DataFrame(columns=['name','uri'])
+        artist_array = []
+        auth = self.get_auth()
+        for i in playlist_id:
+            artist_array.append([k for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
+        for i in artist_array:
+            for k in i:
+                for v in range(len(k["track"]['album']['artists'])):
+                  artist_df =  artist_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
+                
+        artist_df = artist_df.drop_duplicates(subset=['uri'])
+        return artist_df
+            
     
-    def playlists(self, playlist_id):
+    def playlist(self, playlist_id):
         playlist_array = []
         playlist = {}
         auth = self.get_auth()
@@ -103,8 +105,10 @@ class data:
     def testing_for_data(self,playlist_id):
         auth = self.get_auth()
         for i in playlist_id:
-            k = auth.artist(i)
-            print(self.parse_json(k))
+            k = auth.playlist(i, additional_types=('track',))
+            print([i for i in k['tracks']['items']])
+            # print(k)
+            # print(self.parse_json(k))
             break
 
             
@@ -139,8 +143,8 @@ class data:
 
 def main():
     # data().playlist(data().get_playlists('IN'))
-    data().testing_for_data(data().get_playlists('IN'))
-    # data().get_artist()
+    # data().testing_for_data(data().get_playlists('IN'))
+    data().get_artist_id(data().get_playlists('IN'))
 
 if __name__ == "__main__":
     main()
