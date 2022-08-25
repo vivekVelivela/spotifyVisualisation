@@ -22,3 +22,10 @@ wrapt==1.12.1
 packaging == 21.3
 zipp== 3.8.1
 PyGithub== 1.55
+pyjwt, 
+pycparser, 
+cffi, 
+pynacl,
+pandas,
+numpy,
+pytz

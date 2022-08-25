@@ -8,6 +8,7 @@ class Secret:
     def __init__(self):
         self.client_id = None
         self.client_secret = None
+        self.github_access_token = None
         self.get_secret()
         
     
@@ -56,7 +57,7 @@ class Secret:
             # Depending on whether the secret is a string or binary, one of these fields will be populated.
             if 'SecretString' in get_secret_value_response:
                 secret = json.loads(get_secret_value_response['SecretString'])
-                self.client_id, self.client_secret = secret['client_id'],secret['client_secret']
+                self.client_id, self.client_secret, self.github_access_token = secret['client_id'],secret['client_secret'], secret['github_access_token']
             else:
                 decoded_binary_secret = json.loads(base64.b64decode(get_secret_value_response['SecretBinary']))
 
