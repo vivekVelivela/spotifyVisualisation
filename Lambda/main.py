@@ -68,23 +68,29 @@ class data:
     
 
     def get_artist_id(self, playlist_id):
-        artist_df = pd.DataFrame(columns=['name','uri'])
-        artist_array = []
+        artist_id_df = pd.DataFrame(columns=['name','uri'])
+        artist_id_array = []
         auth = self.get_auth()
         for i in playlist_id:
-            artist_array.append([k for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
-        for i in artist_array:
+            artist_id_array.append([k for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
+        for i in artist_id_array:
             for k in i:
                 for v in range(len(k["track"]['album']['artists'])):
-                  artist_df =  artist_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
-                
-        artist_df = artist_df.drop_duplicates(subset=['uri'])
-        return artist_df
-            
+                  artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
+        artist_id_df = artist_id_df.drop_duplicates(subset=['uri'])
+        return artist_id_df
+    
+    def get_artist(self,df):
+        artist_df = pd.DataFrame(columns=['name','popularity'])
+        auth = self.get_auth()
+        artist_df =  artist_df.append([{"name":auth.artist(row['uri'])['name'],'popularity':auth.artist(row['uri'])['popularity']} for index,row in df.iterrows()])
+        artist_df = artist_df.sort_values(by = ['popularity'], ascending=False)
+        artist_df_new = artist_df.head(10)
+        return artist_df_new.to_dict(orient='records')
+                   
     
     def playlist(self, playlist_id):
         playlist_array = []
-        playlist = {}
         auth = self.get_auth()
         for i in playlist_id:
             playlist = {'name':auth.playlist(i)['name'], 'followers': auth.playlist(i)['followers']['total']}
@@ -144,7 +150,9 @@ class data:
 def main():
     # data().playlist(data().get_playlists('IN'))
     # data().testing_for_data(data().get_playlists('IN'))
-    data().get_artist_id(data().get_playlists('IN'))
+    df = data().get_artist_id(data().get_playlists('IN'))
+    data().get_artist(df)
+    # data().tracks(data().get_playlists('IN'))
 
 if __name__ == "__main__":
     main()
