@@ -22,7 +22,7 @@ wrapt==1.12.1
 packaging == 21.3
 zipp== 3.8.1
 PyGithub== 1.55
-pyjwt==2.4.0, 
+pyJWT==2.4.0, 
 pycparser==2.21, 
 cffi==1.15, 
 pynacl==1.5,
