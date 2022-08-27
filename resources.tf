@@ -45,7 +45,7 @@ resource "aws_s3_bucket" "spotifyVisualisationDeployment" {
 }
 
 resource "aws_s3_bucket_object" "file_upload_pack" {
-  bucket = "${aws_s3_bucket.bucket.id}"
+  bucket = "${aws_s3_bucket.spotifyVisualisationDeployment.id}"
   key    = "lambda-functions/Lambda.zip"
   source = "${data.archive_file.zip_the_python_code.output_path}" # its mean it depended on zip
 }
