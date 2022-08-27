@@ -41,7 +41,7 @@ resource "random_uuid" "lambda_src_hash" {
 }
 
 resource "aws_s3_bucket" "spotify_visualisation_deployment_pack" {
-  bucket = "spotifyVisualisationDeployment"
+  bucket = "spotify_visualisation_deployment_pack"
 }
 
 resource "aws_s3_bucket_object" "file_upload_pack" {
