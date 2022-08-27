@@ -28,11 +28,6 @@ class Authentication:
     def get_authectication(self):
         spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=self.client_id, client_secret=self.client_secret))
         return spotify
-    # def __repr__(self):
-    #     return "<Test a:%s b:%s>" % (self.client_id, self.client_secret)
-
-    # def __str__(self):
-    #     return "client_id is %s, and client_secret is %s" % (self.client_id, self.client_secret)
 
 
 
@@ -95,7 +90,7 @@ class data:
         for i in playlist_id:
             playlist = {'name':auth.playlist(i)['name'], 'followers': auth.playlist(i)['followers']['total']}
             playlist_array.append(playlist)
-        return playlist
+        return playlist_array
     
     def tracks(self,playlist_id):
         track_array = []
@@ -113,20 +108,19 @@ class data:
         for i in playlist_id:
             k = auth.playlist(i, additional_types=('track',))
             print([i for i in k['tracks']['items']])
-            # print(k)
-            # print(self.parse_json(k))
             break
-
-            
-        # return playlist_array
     
-
-
-
-
-        # github_auth = github(self.auth().github_access_token,'export const UserData = %s;'% json.dumps(data_array))
-        # commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
-        # commit
+    def commit_data(self):
+        playlist_ids = self.get_playlists('IN')
+        artist_ids = self.get_artist_id(playlist_ids)
+        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids))))
+        commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
+        commit
+    
+    # def test(self):
+    #     playlist_ids = self.get_playlists('IN')
+    #     artist_ids = self.get_artist_id(playlist_ids)
+    #     print('export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids))))
 
 # Helper function to extract and map complex and Nested JSON objects
     def parse_json(self,data):
@@ -150,9 +144,11 @@ class data:
 def main():
     # data().playlist(data().get_playlists('IN'))
     # data().testing_for_data(data().get_playlists('IN'))
-    df = data().get_artist_id(data().get_playlists('IN'))
-    data().get_artist(df)
+    # df = data().get_artist_id(data().get_playlists('IN'))
+    # data().get_artist(df)
     # data().tracks(data().get_playlists('IN'))
+    data = data()
+    data.commit_data()
 
 if __name__ == "__main__":
     main()
