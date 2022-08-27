@@ -40,19 +40,19 @@ resource "random_uuid" "lambda_src_hash" {
   }
 }
 
-resource "aws_s3_bucket" "spotifyVisualisationDeployment" {
+resource "aws_s3_bucket" "spotify_visualisation_deployment_pack" {
   bucket = "spotifyVisualisationDeployment"
 }
 
 resource "aws_s3_bucket_object" "file_upload_pack" {
-  bucket = "${aws_s3_bucket.spotifyVisualisationDeployment.id}"
+  bucket = "${aws_s3_bucket.spotify_visualisation_deployment_pack.id}"
   key    = "lambda-functions/Lambda.zip"
   source = "${data.archive_file.zip_the_python_code.output_path}" # its mean it depended on zip
 }
  
 resource "aws_lambda_function" "extract_data_lambda_func" {
 function_name                  = "extract_data"
-s3_bucket                      = aws_s3_bucket.spotifyVisualisationDeployment.bucket
+s3_bucket                      = aws_s3_bucket.spotify_visualisation_deployment_pack.bucket
 s3_key                         = aws_s3_bucket_object.file_upload_pack.key
 role                           = aws_iam_role.lambda_role.arn
 handler                        = "main.lambda_handler"
