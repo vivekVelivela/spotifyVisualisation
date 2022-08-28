@@ -9,7 +9,8 @@ from resources import Secret
 from github import Github
 import pandas as pd
 def lambda_handler(event, context):
-    main()
+    Data = data()
+    Data.commit_data()
 
     return {
                 "statusCode": 200,
@@ -111,7 +112,7 @@ class data:
             break
     
     def commit_data(self):
-        playlist_ids = self.get_playlists('IN')
+        playlist_ids = self.get_playlists('US')
         artist_ids = self.get_artist_id(playlist_ids)
         github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids))))
         commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
@@ -147,8 +148,8 @@ def main():
     # df = data().get_artist_id(data().get_playlists('IN'))
     # data().get_artist(df)
     # data().tracks(data().get_playlists('IN'))
-    data = data()
-    data.commit_data()
+    # Data = data()
+    # Data.commit_data()
 
 if __name__ == "__main__":
     main()
