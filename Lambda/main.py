@@ -113,8 +113,8 @@ class data:
             break
     
     def commit_data(self):
-        a = random.randint(0,range(len)-1)
         countries = ['IN','GB']
+        a = random.randint(0,len(countries)-1)
         playlist_ids = self.get_playlists(countries[a])
         artist_ids = self.get_artist_id(playlist_ids)
         github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids))))
@@ -145,15 +145,15 @@ class data:
             
 
 
-# def main():
+def main():
     # data().playlist(data().get_playlists('IN'))
     # data().testing_for_data(data().get_playlists('IN'))
     # df = data().get_artist_id(data().get_playlists('IN'))
     # data().get_artist(df)
     # data().tracks(data().get_playlists('IN'))
-    # Data = data()
-    # Data.commit_data()
+    Data = data()
+    Data.commit_data()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
     
