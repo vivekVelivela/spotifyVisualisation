@@ -10,17 +10,18 @@ from github import Github
 import pandas as pd
 import random
 def lambda_handler(event, context):
-    Data = data()
-    Data.commit_data()
+    # Data = data()
+    # Data.commit_data()
+    print(data().get_playlists('GB'))
 
-    return {
-                "statusCode": 200,
-                "headers": {
-                    "Access-Control-Allow-Origin":"*",
-                    "Content-Type": "application/json"
-                },
-                "body": "Success"
-            }
+    # return {
+    #             "statusCode": 200,
+    #             "headers": {
+    #                 "Access-Control-Allow-Origin":"*",
+    #                 "Content-Type": "application/json"
+    #             },
+    #             "body": "Success"
+    #         }
 
 class Authentication:
     def __init__(self, client_id,client_secret, github_access_token):
