@@ -10,9 +10,9 @@ from github import Github
 import pandas as pd
 import random
 def lambda_handler(event, context):
-    # Data = data()
-    # Data.commit_data()
-    print(data().get_playlists('GB'))
+    Data = data()
+    Data.commit_data()
+    # print(data().get_playlists('GB'))
 
     # return {
     #             "statusCode": 200,
