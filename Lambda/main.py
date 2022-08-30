@@ -14,8 +14,8 @@ def lambda_handler(event, context):
     countries = ['IN','GB']
     a = random.randint(0,len(countries)-1)
     playlist_ids = Data.get_playlists(countries[a])
-    artist_ids = Data.get_artist_id(playlist_ids)
-    print(artist_ids)
+    # artist_ids = Data.get_artist_id(playlist_ids)
+    print(playlist_ids)
     # print(data().get_playlists('GB'))
 
     # return {
