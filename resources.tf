@@ -56,7 +56,7 @@ s3_bucket                      = aws_s3_bucket.spotify_visualisation_deployment_
 s3_key                         = aws_s3_bucket_object.file_upload_pack.key
 role                           = aws_iam_role.lambda_role.arn
 handler                        = "main.lambda_handler"
-runtime                        = "python3.7"
+runtime                        = "python3.8"
 source_code_hash               = filebase64sha256("${data.archive_file.zip_the_python_code.output_path}")
 depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
 environment {
