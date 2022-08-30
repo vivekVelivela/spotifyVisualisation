@@ -4,6 +4,9 @@ from botocore.exceptions import ClientError
 import os
 import json
 
+
+os.environ['region'] = 'ap-southeast-2'
+os.environ['SECRET_ARN'] = 'arn:aws:secretsmanager:ap-southeast-2:566105134773:secret:lambda_spotifySecret-EnkGVB'
 class Secret:
     def __init__(self):
         self.client_id = None
@@ -17,7 +20,8 @@ class Secret:
 
         # Create a Secrets Manager client
         # session = boto3.session.Session(profile_name  = 'vivek-personal-iam-user')
-        client = boto3.client(
+        session = boto3.session.Session()
+        client = session.client(
             service_name='secretsmanager',
             region_name=region_name
         )
@@ -28,7 +32,7 @@ class Secret:
 
         try:
             get_secret_value_response = client.get_secret_value(
-                SecretId= 'arn:aws:secretsmanager:ap-southeast-2:566105134773:secret:lambda_spotifySecret-EnkGVB' #os.environ.get('SECRET_ARN')
+                SecretId= os.environ.get('SECRET_ARN')
                 )
 
         except ClientError as e:
