@@ -16,8 +16,8 @@ class Secret:
         region_name = os.environ.get("region")
 
         # Create a Secrets Manager client
-        session = boto3.session.Session(profile_name  = 'vivek-personal-iam-user')
-        client = session.client(
+        # session = boto3.session.Session(profile_name  = 'vivek-personal-iam-user')
+        client = boto3.client(
             service_name='secretsmanager',
             region_name=region_name
         )
