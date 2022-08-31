@@ -10,8 +10,11 @@ from github import Github
 import pandas as pd
 import random
 def lambda_handler(event, context):
+    print(event)
     Data = data()
     Data.commit_data()
+    print('## ENVIRONMENT VARIABLES')
+    print(os.environ)
     # countries = ['IN','GB']
     # a = random.randint(0,len(countries)-1)
     # playlist_ids = Data.get_playlists(countries[a])
@@ -34,7 +37,9 @@ class Authentication:
         self.client_secret = client_secret
         self.github_access_token = github_access_token
     def get_authectication(self):
-        spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=self.client_id, client_secret=self.client_secret))
+        spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=self.client_id,
+         client_secret=self.client_secret,proxies=None, requests_session=True, 
+         requests_timeout=None, cache_handler=None))
         return spotify
 
 
@@ -67,7 +72,11 @@ class data:
     
     def get_playlists(self,country_code):
         auth = self.get_auth()
-        return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
+        k = auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
+        print(k)
+        # for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']:
+            # print(i['uri'])
+        # return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
     
 
     def get_artist_id(self, playlist_id):
@@ -109,6 +118,12 @@ class data:
         df = pd.DataFrame(flatlist, columns = ['track', 'popularity']).drop_duplicates(subset=['track']).sort_values(by = ['popularity'], ascending=False)
         df_new = df.head(10)
         return df_new.to_dict(orient='records')
+    
+    def top_id(self, df, column):
+        index = df['popularity'].idxmax()
+        return df[str(column)][index]
+
+
     
     
     def testing_for_data(self,playlist_id):
@@ -154,11 +169,13 @@ class data:
 def main():
     # data().playlist(data().get_playlists('IN'))
     # data().testing_for_data(data().get_playlists('IN'))
-    # df = data().get_artist_id(data().get_playlists('IN'))
-    # data().get_artist(df)
-    # data().tracks(data().get_playlists('IN'))
     Data = data()
-    Data.commit_data()
+    df = Data.get_artist_id(Data.get_playlists('IN'))
+    df1  = Data.get_artist(df)
+    df2 = Data.top_id(df1,'track')
+    # data().tracks(data().get_playlists('IN'))
+    # Data = data()
+    # Data.commit_data()
 
 if __name__ == "__main__":
     main()

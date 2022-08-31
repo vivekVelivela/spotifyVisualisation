@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
   name              = "/aws/lambda/${var.project_name}_lambda"
-  retention_in_days = 14
+  retention_in_days = 7
 }
 data "archive_file" "zip_the_python_code" {
   depends_on = [null_resource.install_dependencies]
@@ -101,7 +101,7 @@ data "aws_secretsmanager_secret_version" "spotify_creds" {
 resource "aws_cloudwatch_event_rule" "every_one_minute" {
   name                = "every-Hundered-minutes"
   description         = "Fires every hundred minutes"
-  schedule_expression = "rate(20 minutes)"
+  schedule_expression = "rate(200 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "check_foo_every_one_minute" {
