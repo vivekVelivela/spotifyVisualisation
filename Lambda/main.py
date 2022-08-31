@@ -11,11 +11,12 @@ import pandas as pd
 import random
 def lambda_handler(event, context):
     Data = data()
-    countries = ['IN','GB']
-    a = random.randint(0,len(countries)-1)
-    playlist_ids = Data.get_playlists(countries[a])
-    artist_ids = Data.get_artist_id(playlist_ids)
-    print(artist_ids)
+    Data.commit_data()
+    # countries = ['IN','GB']
+    # a = random.randint(0,len(countries)-1)
+    # playlist_ids = Data.get_playlists(countries[a])
+    # artist_ids = Data.get_artist_id(playlist_ids)
+    # print(artist_ids)
     # print(data().get_playlists('GB'))
 
     # return {
