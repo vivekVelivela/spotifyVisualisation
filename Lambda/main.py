@@ -78,7 +78,7 @@ class data:
         for i in artist_id_array:
             for k in i:
                 for v in range(len(k["track"]['album']['artists'])):
-                  artist_id_df =  artist_id_df.concat({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
+                  artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
         artist_id_df = artist_id_df.drop_duplicates(subset=['uri'])
         return artist_id_df
     
