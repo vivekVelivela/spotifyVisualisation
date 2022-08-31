@@ -14,8 +14,8 @@ def lambda_handler(event, context):
     countries = ['IN','GB']
     a = random.randint(0,len(countries)-1)
     playlist_ids = Data.get_playlists(countries[a])
-    # artist_ids = Data.get_artist_id(playlist_ids)
-    print(playlist_ids)
+    artist_ids = Data.get_artist_id(playlist_ids)
+    print(artist_ids)
     # print(data().get_playlists('GB'))
 
     # return {
@@ -78,7 +78,7 @@ class data:
         for i in artist_id_array:
             for k in i:
                 for v in range(len(k["track"]['album']['artists'])):
-                  artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
+                  artist_id_df =  artist_id_df.concat({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
         artist_id_df = artist_id_df.drop_duplicates(subset=['uri'])
         return artist_id_df
     
