@@ -1,3 +1,5 @@
+from array import array
+import doctest
 import traceback
 import boto3
 import os
@@ -72,13 +74,15 @@ class data:
     
     def get_playlists(self,country_code):
         auth = self.get_auth()
-        k = auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
-        print(k)
+        # k = auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
         # for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']:
-            # print(i['uri'])
-        # return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
+        return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
     
-
+    # def get_playlist_items(self, playlist_id):
+    #     auth = self.get_auth()
+    #     for i in playlist_id:
+    #         print(auth.playlist_items(i))
+    #         break
     def get_artist_id(self, playlist_id):
         artist_id_df = pd.DataFrame(columns=['name','uri'])
         artist_id_array = []
@@ -87,8 +91,9 @@ class data:
             artist_id_array.append([k for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
         for i in artist_id_array:
             for k in i:
+        #         if k == None:
                 for v in range(len(k["track"]['album']['artists'])):
-                  artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
+                    artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
         artist_id_df = artist_id_df.drop_duplicates(subset=['uri'])
         return artist_id_df
     
@@ -113,16 +118,19 @@ class data:
         track_array = []
         auth = self.get_auth()
         for i in playlist_id:
-            track_array.append([[k['track']['name'],k['track']['popularity']] for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
+            track_array.append([[k['track']['name'],k['track']['popularity'], k['track']['uri']] for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
         flatlist=[element for sublist in track_array for element in sublist]
-        df = pd.DataFrame(flatlist, columns = ['track', 'popularity']).drop_duplicates(subset=['track']).sort_values(by = ['popularity'], ascending=False)
+        df = pd.DataFrame(flatlist, columns = ['track', 'popularity', 'uri']).drop_duplicates(subset=['track']).sort_values(by = ['popularity'], ascending=False)
         df_new = df.head(10)
         return df_new.to_dict(orient='records')
     
-    def top_id(self, df, column):
-        index = df['popularity'].idxmax()
-        return df[str(column)][index]
-
+    def get_track_details(self,dict):
+        auth = self.get_auth()
+        for i in dict:
+            k = auth.audio_features(i['uri'])
+            for l in k:
+                 return {"track_name":i['track'],"danceability":l['danceability'],"energy":l['energy']}
+            
 
     
     
@@ -138,7 +146,8 @@ class data:
         a = random.randint(0,len(countries)-1)
         playlist_ids = self.get_playlists(countries[a])
         artist_ids = self.get_artist_id(playlist_ids)
-        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids))))
+        track_ids = self.tracks(playlist_ids)
+        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids))))
         commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
         commit
     
@@ -169,13 +178,16 @@ class data:
 def main():
     # data().playlist(data().get_playlists('IN'))
     # data().testing_for_data(data().get_playlists('IN'))
-    Data = data()
-    df = Data.get_artist_id(Data.get_playlists('IN'))
-    df1  = Data.get_artist(df)
-    df2 = Data.top_id(df1,'track')
-    # data().tracks(data().get_playlists('IN'))
     # Data = data()
-    # Data.commit_data()
+    # df = Data.get_playlists('IN')
+    # df1 = Data.tracks(df)
+    # df2 = Data.get_track_details(df1)
+    # Data.get_track_details()
+    # df1  = Data.tracks(df)
+    # df2 = Data.top_id(df1,'popularity','track')
+    # data().tracks(data().get_playlists('IN'))
+    Data = data()
+    Data.commit_data()
 
 if __name__ == "__main__":
     main()
