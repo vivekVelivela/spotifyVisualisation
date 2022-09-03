@@ -100,7 +100,9 @@ class data:
     def get_artist(self,df):
         artist_df = pd.DataFrame(columns=['name','popularity'])
         auth = self.get_auth()
-        artist_df =  artist_df.append([{"name":auth.artist(row['uri'])['name'],'popularity':auth.artist(row['uri'])['popularity']} for index,row in df.iterrows()])
+        for index,row in df.iterrows():
+            i = auth.artist(row['uri'])
+            artist_df =  artist_df.append({"name":i['name'],'popularity':i['popularity']},ignore_index=True )
         artist_df = artist_df.sort_values(by = ['popularity'], ascending=False)
         artist_df_new = artist_df.head(10)
         return artist_df_new.to_dict(orient='records')
@@ -126,10 +128,12 @@ class data:
     
     def get_track_details(self,dict):
         auth = self.get_auth()
+        track_details_array = []
         for i in dict:
             k = auth.audio_features(i['uri'])
             for l in k:
-                 return {"track_name":i['track'],"danceability":l['danceability'],"energy":l['energy']}
+                 track_details_array.append({"track_name":i['track'],"danceability":l['danceability'],"energy":l['energy']})
+        return track_details_array
             
 
     
@@ -144,7 +148,7 @@ class data:
     def commit_data(self):
         countries = ['IN','GB']
         a = random.randint(0,len(countries)-1)
-        playlist_ids = self.get_playlists(countries[a])
+        playlist_ids = self.get_playlists('AU')
         artist_ids = self.get_artist_id(playlist_ids)
         track_ids = self.tracks(playlist_ids)
         github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids))))
