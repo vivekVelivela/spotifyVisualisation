@@ -146,7 +146,7 @@ class data:
             break
     
     def commit_data(self):
-        countries = ['IN','GB']
+        countries = ['IN','GB', 'AU', 'US']
         a = random.randint(0,len(countries)-1)
         playlist_ids = self.get_playlists('AU')
         artist_ids = self.get_artist_id(playlist_ids)
