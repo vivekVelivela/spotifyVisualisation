@@ -152,7 +152,7 @@ class data:
         playlist_ids = self.get_playlists(countries[a])
         artist_ids = self.get_artist_id(playlist_ids)
         track_ids = self.tracks(playlist_ids)
-        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s; \n export const country = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids)),str(countries[a])))
+        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s; \n export const country = \'%s\';'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids)),str(countries[a])))
         commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
         commit
     
