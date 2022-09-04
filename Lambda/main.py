@@ -12,11 +12,8 @@ from github import Github
 import pandas as pd
 import random
 def lambda_handler(event, context):
-    print(event)
     Data = data()
     Data.commit_data()
-    print('## ENVIRONMENT VARIABLES')
-    print(os.environ)
     # countries = ['IN','GB']
     # a = random.randint(0,len(countries)-1)
     # playlist_ids = Data.get_playlists(countries[a])
@@ -84,18 +81,22 @@ class data:
     #         print(auth.playlist_items(i))
     #         break
     def get_artist_id(self, playlist_id):
-        artist_id_df = pd.DataFrame(columns=['name','uri'])
-        artist_id_array = []
-        auth = self.get_auth()
-        for i in playlist_id:
-            artist_id_array.append([k for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
-        for i in artist_id_array:
-            for k in i:
-        #         if k == None:
-                for v in range(len(k["track"]['album']['artists'])):
-                    artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
-        artist_id_df = artist_id_df.drop_duplicates(subset=['uri'])
-        return artist_id_df
+        try:
+            artist_id_df = pd.DataFrame(columns=['name','uri'])
+            artist_id_array = []
+            auth = self.get_auth()
+            for i in playlist_id:
+                artist_id_array.append([k for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
+            for i in artist_id_array:
+                for k in i:
+                    if k == None:
+                        print(i)
+                    for v in range(len(k["track"]['album']['artists'])):
+                        artist_id_df =  artist_id_df.append({'name':k["track"]['album']['artists'][v]['name'],'uri':k["track"]['album']['artists'][v]['uri']},ignore_index=True )
+            artist_id_df = artist_id_df.drop_duplicates(subset=['uri'])
+            return artist_id_df
+        except Exception as e:
+            print(e)
     
     def get_artist(self,df):
         artist_df = pd.DataFrame(columns=['name','popularity'])
@@ -120,7 +121,7 @@ class data:
         track_array = []
         auth = self.get_auth()
         for i in playlist_id:
-            track_array.append([[k['track']['name'],k['track']['popularity'], k['track']['uri']] for k in auth.playlist(i, additional_types=('track',))['tracks']['items']])
+            track_array.append([[k['track']['name'],k['track']['popularity'], k['track']['uri']] for k in auth.playlist(i, additional_types=('track',))['tracks']['items'] if k['track'] is not None])
         flatlist=[element for sublist in track_array for element in sublist]
         df = pd.DataFrame(flatlist, columns = ['track', 'popularity', 'uri']).drop_duplicates(subset=['track']).sort_values(by = ['popularity'], ascending=False)
         df_new = df.head(10)
@@ -146,12 +147,12 @@ class data:
             break
     
     def commit_data(self):
-        countries = ['IN','GB', 'AU', 'US']
+        countries = ['IN','GB', 'AU']
         a = random.randint(0,len(countries)-1)
-        playlist_ids = self.get_playlists('AU')
+        playlist_ids = self.get_playlists(countries[a])
         artist_ids = self.get_artist_id(playlist_ids)
         track_ids = self.tracks(playlist_ids)
-        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids))))
+        github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s; \n export const country = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids)),str(countries[a])))
         commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
         commit
     
