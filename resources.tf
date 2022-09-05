@@ -98,14 +98,14 @@ data "aws_secretsmanager_secret_version" "spotify_creds" {
 }
 
 
-resource "aws_cloudwatch_event_rule" "every_one_minute" {
-  name                = "every-Hundered-minutes"
-  description         = "Fires every hundred minutes"
+resource "aws_cloudwatch_event_rule" "every_thousand_minutes" {
+  name                = "every-Thousand-minutes"
+  description         = "Fires every thousand minutes"
   schedule_expression = "rate(1000 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "check_foo_every_one_minute" {
-  rule      = "${aws_cloudwatch_event_rule.every_one_minute.name}"
+  rule      = "${aws_cloudwatch_event_rule.every_thousand_minutes.name}"
   target_id = "lambda"
   arn       = "${aws_lambda_function.extract_data_lambda_func.arn}"
 }
@@ -115,5 +115,5 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_foo" {
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.extract_data_lambda_func.function_name}"
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.every_one_minute.arn}"
+  source_arn    = "${aws_cloudwatch_event_rule.every_thousand_minutes.arn}"
 }
