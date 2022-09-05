@@ -1,5 +1,5 @@
 # spotifyVisualisation![SpotifyVisualisationV1Architecture](https://user-images.githubusercontent.com/36952071/188436855-b6591f43-7611-44f2-8425-565fdf41d87c.png)
-The above picture is V1 architecture of spotifyVisualisation(https://master.d2h5gxb569cuim.amplifyapp.com/). 
+The above picture is V1 architecture of spotifyVisualisation(https://www.spotifyvisualisation.com/). 
 As shown above a AWS Cloudwatch event has been setup which triggers lambda once everyday.
 
 AWS Lambda selects a random country among India(IN), Australia(AU), Great Britain(GB) to pull spotify featured playlist from and uses those playlist ID's to pull more information like each track details, playlist followers, artist details of every track.
