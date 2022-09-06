@@ -9,8 +9,14 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from resources import Secret
 from github import Github
+import logging
 import pandas as pd
 import random
+# Initialize you log configuration using the base class
+logging.basicConfig(level = logging.INFO)
+
+# Retrieve the logger instance
+logger = logging.getLogger()
 def lambda_handler(event, context):
     Data = data()
     Data.commit_data()
@@ -150,8 +156,11 @@ class data:
         countries = ['IN','GB', 'AU']
         a = random.randint(0,len(countries)-1)
         playlist_ids = self.get_playlists(countries[a])
+        logger.info(playlist_ids)
         artist_ids = self.get_artist_id(playlist_ids)
+        logger.info(artist_ids)
         track_ids = self.tracks(playlist_ids)
+        logger.info(track_ids)
         github_auth = github(self.auth().github_access_token,'export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s; \n export const track_details = %s; \n export const country = \'%s\';'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids)),json.dumps(self.get_track_details(track_ids)),str(countries[a])))
         commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
         commit
