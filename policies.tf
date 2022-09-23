@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "lambda_policy" {
-  name        = "lambda_policy"
+  name        = "lambda_policy_${var.name}"
   description = ""
   policy = <<EOF
 {
@@ -20,7 +20,7 @@ EOF
 }
 
 resource "aws_iam_policy" "lambda_secret_policy" {
-  name        = "lambda_secret_policy"
+  name        = "lambda_secret_policy_${var.name}"
   description = ""
   policy = <<EOF
 {
