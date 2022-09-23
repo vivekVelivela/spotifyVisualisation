@@ -32,7 +32,7 @@ variable "aws_access_key_id" {
   
 }
 variable "env" {
-  type = map(string)
+  type = string
 } 
 
  
