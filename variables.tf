@@ -29,8 +29,5 @@ variable "aws_access_key_id" {
    type        = string
   
 }
-variable "env" {
-  type = string
-} 
 
  
