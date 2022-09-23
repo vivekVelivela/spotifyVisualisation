@@ -3,6 +3,17 @@ variable "project_name" {
   default = "spotifyVisualisation"
 }
 
+variable "client_id" {
+  type = string
+  default = "spotifyVisualisation"
+}
+
+variable "client_secret" {
+  type = string
+  default = "spotifyVisualisation"
+}
+
+
 variable "region"{
   type = string
   default = "ap-southeast-2"
