@@ -58,7 +58,7 @@ jobs:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
         
     - name: Terraform Init 
-      run: terraform init -backend-config=dev_backend.hcl.json
+      run: terraform init
 
     - name: Terraform Plan 
       run: terraform plan
