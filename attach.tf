@@ -7,7 +7,7 @@ locals {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {   
-    for_each = {for i, val in local.service_account_emails: i => val}
+    for_each = {for i, val in local.policies: i => val}
        role        = aws_iam_role.lambda_role.name
        policy_arn  = each.value
        depends_on = [
