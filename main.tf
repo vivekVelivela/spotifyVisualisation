@@ -5,7 +5,7 @@ terraform {
       version = "~> 3.75.2"
     }
   }
-backend "remote" {
+cloud {
   hostname = "app.terraform.io"
   organization = "vivek-personal"
 
