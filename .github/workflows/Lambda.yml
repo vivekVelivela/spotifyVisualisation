@@ -61,10 +61,10 @@ jobs:
       run: terraform init
 
     - name: Terraform Init lambda_policy
-      run: terraform init -target='aws_iam_policy.lambda_policy'
+      run: terraform plan -target='aws_iam_policy.lambda_policy'
 
     - name: Terraform Init lambda_policy
-      run: terraform init -target='aws_iam_policy.lambda_secret_policy'
+      run: terraform plan -target='aws_iam_policy.lambda_secret_policy'
 
 
     - name: Terraform Plan 
