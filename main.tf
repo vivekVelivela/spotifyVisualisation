@@ -10,7 +10,7 @@ backend "remote" {
   organization = "vivek-personal"
 
   workspaces {
-    name = "spotifyVisualisation"
+    name = "spotifyVisualisation_dev"
   }
   
 }

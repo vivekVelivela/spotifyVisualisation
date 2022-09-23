@@ -1,14 +1,6 @@
 variable "project_name" {
   type = string
-  default = "lambda"
-}
-
-variable "client_id" {
-  type = string
-}
-
-variable "client_secret" {
-  type = string
+  default = "spotifyVisualisation"
 }
 
 variable "region"{
@@ -28,3 +20,8 @@ variable "aws_access_key_id" {
    type        = string
   
 }
+variable "env" {
+  type = string
+} 
+
+ 

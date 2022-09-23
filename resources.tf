@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
-  name              = "/aws/lambda/${var.project_name}_lambda"
+  name              = "/aws/lambda/${var.project_name}_lambda_${var.env}"
   retention_in_days = 7
 }
 data "archive_file" "zip_the_python_code" {
@@ -41,7 +41,7 @@ resource "random_uuid" "lambda_src_hash" {
 }
 
 resource "aws_s3_bucket" "spotify_visualisation_deployment_pack" {
-  bucket = "spotify-visualisation-deployment-pack"
+  bucket = "spotify-visualisation-deployment-pack-${var.env}"
 }
 
 resource "aws_s3_bucket_object" "file_upload_pack" {
@@ -51,7 +51,7 @@ resource "aws_s3_bucket_object" "file_upload_pack" {
 }
  
 resource "aws_lambda_function" "extract_data_lambda_func" {
-function_name                  = "extract_data"
+function_name                  = "${var.project_name}_extract_data_${var.env}"
 s3_bucket                      = aws_s3_bucket.spotify_visualisation_deployment_pack.bucket
 s3_key                         = aws_s3_bucket_object.file_upload_pack.key
 role                           = aws_iam_role.lambda_role.arn
@@ -70,7 +70,7 @@ environment {
 }
 
 resource "aws_secretsmanager_secret" "spotify_credential_secret" {
-  name = "${var.project_name}_spotifySecret"
+  name = "${var.project_name}_spotifySecret_${var.env}"
   recovery_window_in_days = 0
 }
 
@@ -99,7 +99,7 @@ data "aws_secretsmanager_secret_version" "spotify_creds" {
 
 
 resource "aws_cloudwatch_event_rule" "every_thousand_minutes" {
-  name                = "every-Thousand-minutes"
+  name                = "every-Thousand-minutes_${var.name}"
   description         = "Fires every thousand minutes"
   schedule_expression = "rate(20 minutes)"
 }

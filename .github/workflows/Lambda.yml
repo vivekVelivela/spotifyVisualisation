@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 
 jobs:
@@ -14,6 +15,34 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: main
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        
+    - name: Terraform Init
+      run: terraform init 
+
+    - name: Terraform Plan 
+      run: terraform plan
+
+    - name: Terraform Apply 
+      run: terraform apply -auto-approve
+  
+  deploy-dev:
+    name: 'Deploy dev'
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    environment: dev
 
     defaults:
       run:
