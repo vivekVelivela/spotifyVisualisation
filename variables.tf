@@ -2,6 +2,15 @@ variable "project_name" {
   type = string
   default = "spotifyVisualisation"
 }
+variable "client_id" {
+  type = string
+ 
+}
+
+variable "client_secret" {
+  type = string
+ 
+}
 
 variable "region"{
   type = string
