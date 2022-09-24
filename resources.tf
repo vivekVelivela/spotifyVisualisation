@@ -101,7 +101,7 @@ data "aws_secretsmanager_secret_version" "spotify_creds" {
 resource "aws_cloudwatch_event_rule" "every_thousand_minutes" {
   name                = "every-Thousand-minutes" 
   description         = "Fires every thousand minutes"
-  schedule_expression = "rate(20 minutes)"
+  schedule_expression = "rate(1440 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "check_foo_every_one_minute" {
