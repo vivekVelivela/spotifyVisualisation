@@ -20,21 +20,7 @@ logger = logging.getLogger()
 def lambda_handler(event, context):
     Data = data()
     Data.commit_data()
-    # countries = ['IN','GB']
-    # a = random.randint(0,len(countries)-1)
-    # playlist_ids = Data.get_playlists(countries[a])
-    # artist_ids = Data.get_artist_id(playlist_ids)
-    # print(artist_ids)
-    # print(data().get_playlists('GB'))
-
-    # return {
-    #             "statusCode": 200,
-    #             "headers": {
-    #                 "Access-Control-Allow-Origin":"*",
-    #                 "Content-Type": "application/json"
-    #             },
-    #             "body": "Success"
-    #         }
+    
 
 class Authentication:
     def __init__(self, client_id,client_secret, github_access_token):
@@ -77,15 +63,9 @@ class data:
     
     def get_playlists(self,country_code):
         auth = self.get_auth()
-        # k = auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
-        # for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']:
         return [i['uri'] for i in auth.featured_playlists('en',country_code,timestamp= datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") ,limit=50)['playlists']['items']]
     
-    # def get_playlist_items(self, playlist_id):
-    #     auth = self.get_auth()
-    #     for i in playlist_id:
-    #         print(auth.playlist_items(i))
-    #         break
+    
     def get_artist_id(self, playlist_id):
         try:
             artist_id_df = pd.DataFrame(columns=['name','uri'])
@@ -165,41 +145,13 @@ class data:
         commit = github_auth.update_repo("src/components/Data.js", "updating_data_files")
         commit
     
-    # def test(self):
-    #     playlist_ids = self.get_playlists('IN')
-    #     artist_ids = self.get_artist_id(playlist_ids)
-    #     print('export const playlist_followers = %s; \n export const track_popularity = %s; \n export const artist_popularity = %s;'% (json.dumps(self.playlist(playlist_ids)),json.dumps(self.tracks(playlist_ids)),json.dumps(self.get_artist(artist_ids))))
-
-# Helper function to extract and map complex and Nested JSON objects
-    def parse_json(self,data):
-        for key,value in data.items():
-            print (str(key)+'->'+str(value))
-            if isinstance(value, dict):
-                self.parse_json(value)
-            elif isinstance(value, list):
-                for val in value:
-                    if isinstance(val, str):
-                        # print(val)
-                        pass
-                    elif isinstance(val, list):
-                        pass
-                    else:
-                        self.parse_json(val)
+    
+    
 
             
 
 
 def main():
-    # data().playlist(data().get_playlists('IN'))
-    # data().testing_for_data(data().get_playlists('IN'))
-    # Data = data()
-    # df = Data.get_playlists('IN')
-    # df1 = Data.tracks(df)
-    # df2 = Data.get_track_details(df1)
-    # Data.get_track_details()
-    # df1  = Data.tracks(df)
-    # df2 = Data.top_id(df1,'popularity','track')
-    # data().tracks(data().get_playlists('IN'))
     Data = data()
     Data.commit_data()
 
