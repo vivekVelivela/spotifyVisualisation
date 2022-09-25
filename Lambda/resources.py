@@ -5,8 +5,8 @@ import os
 import json
 
 
-os.environ['region'] = 'ap-southeast-2'
-os.environ['SECRET_ARN'] = 'arn:aws:secretsmanager:ap-southeast-2:566105134773:secret:lambda_spotifySecret-EnkGVB'
+# os.environ['region'] = 'ap-southeast-2'
+# os.environ['SECRET_ARN'] = 'arn:aws:secretsmanager:ap-southeast-2:566105134773:secret:lambda_spotifySecret-EnkGVB'
 class Secret:
     def __init__(self):
         self.client_id = None

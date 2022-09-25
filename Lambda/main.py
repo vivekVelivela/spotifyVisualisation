@@ -151,10 +151,10 @@ class data:
             
 
 
-def main():
-    Data = data()
-    Data.commit_data()
+# def main():
+#     Data = data()
+#     Data.commit_data()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
     
