@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
-  name              = "/aws/lambda/${var.project_name}_lambda"
+  name              = "/aws/lambda/${var.project_name}_extract_data"
   retention_in_days = 7
 }
 data "archive_file" "zip_the_python_code" {
