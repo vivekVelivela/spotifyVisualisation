@@ -32,6 +32,9 @@ jobs:
     - name: Terraform Init
       run: terraform init 
 
+    - name: folder
+      run: ls
+
     - name: Terraform Plan 
       run: terraform plan
 
