@@ -1,7 +1,10 @@
+### Creating Cloudwatch log group to store lambda Logs
 resource "aws_cloudwatch_log_group" "extract_data_lambda_logs" {
   name              = "/aws/lambda/${var.project_name}_lambda_${var.env}"
   retention_in_days = 7
 }
+
+#### Zip file archive for lambda deployment package
 data "archive_file" "zip_the_python_code" {
   depends_on = [null_resource.install_dependencies]
   excludes   = [
@@ -16,6 +19,7 @@ data "archive_file" "zip_the_python_code" {
   type        = "zip"
 }
 
+### null resouce uses local-exec provisioner to download necessary packages for lambda(This truggers when there is a change in requirements.txt or main.py or any other change in hasing of lambda)
 resource "null_resource" "install_dependencies" {
   provisioner "local-exec" {
     command = "pip install -r ${var.lambda_root}/requirements.txt --no-deps --ignore-installed -t ${var.lambda_root}/ --upgrade"
@@ -28,6 +32,8 @@ resource "null_resource" "install_dependencies" {
   }
 }
 
+
+#### random_uuid generates a random ID with the hash of lambda deployment package 
 resource "random_uuid" "lambda_src_hash" {
   keepers = {
     for filename in setunion(
@@ -40,16 +46,20 @@ resource "random_uuid" "lambda_src_hash" {
   }
 }
 
+#### s3 bucket to store the zip file fo lambda
 resource "aws_s3_bucket" "spotify_visualisation_deployment_pack" {
   bucket = "spotify-visualisation-deployment-pack-${var.env}"
 }
 
+##### uploads the deployment pack to s3
 resource "aws_s3_bucket_object" "file_upload_pack" {
   bucket = "${aws_s3_bucket.spotify_visualisation_deployment_pack.id}"
   key    = "lambda-functions/Lambda.zip"
-  source = "${data.archive_file.zip_the_python_code.output_path}" # its mean it depended on zip
+  source = "${data.archive_file.zip_the_python_code.output_path}" # it means it depended on zip
 }
  
+
+#### LAMBDA FUNCTION
 resource "aws_lambda_function" "extract_data_lambda_func" {
 function_name                  = "${var.project_name}_extract_data_${var.env}"
 s3_bucket                      = aws_s3_bucket.spotify_visualisation_deployment_pack.bucket
@@ -61,6 +71,7 @@ memory_size                    = 10240
 source_code_hash               = filebase64sha256("${data.archive_file.zip_the_python_code.output_path}")
 depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
 timeout                        = 900
+
 environment {
     variables = {
       SECRET_ARN = aws_secretsmanager_secret.spotify_credential_secret.arn
@@ -69,11 +80,15 @@ environment {
 }
 }
 
+
+#### secrets manager for storing spotify app credentials
 resource "aws_secretsmanager_secret" "spotify_credential_secret" {
   name = "${var.project_name}_spotifySecret_${var.env}"
   recovery_window_in_days = 0
 }
 
+
+##### aws_secretsmanager_secret_version stores the env variable client_id and client_secret in secrets manager
 resource "aws_secretsmanager_secret_version" "spotify_credential_sversion" {
   secret_id = aws_secretsmanager_secret.spotify_credential_secret.id
   secret_string = <<EOF
@@ -84,36 +99,35 @@ resource "aws_secretsmanager_secret_version" "spotify_credential_sversion" {
 EOF
 }
 
+#### This is used to assign as env variable inside lambda 
 data "aws_secretsmanager_secret" "spotify_credential_secret" {
   arn = aws_secretsmanager_secret.spotify_credential_secret.arn
 }
  
 # Importing the AWS secret version created previously using arn.
  
-data "aws_secretsmanager_secret_version" "spotify_creds" {
-  secret_id = data.aws_secretsmanager_secret.spotify_credential_secret.arn
-  depends_on = [aws_secretsmanager_secret_version.spotify_credential_sversion,
-  aws_secretsmanager_secret.spotify_credential_secret
-  ]
-}
+# data "aws_secretsmanager_secret_version" "spotify_creds" {
+#   secret_id = data.aws_secretsmanager_secret.spotify_credential_secret.arn
+#   depends_on = [aws_secretsmanager_secret_version.spotify_credential_sversion,
+#   aws_secretsmanager_secret.spotify_credential_secret
+#   ]
+# }
 
-
+###### declaring cloudwatch event rule with a schedule
 resource "aws_cloudwatch_event_rule" "every_thousand_minutes" {
   name                = "every-Thousand-minutes_${var.env}"
   description         = "Fires every thousand minutes"
-  schedule_expression = "rate(10000 minutes)"
+  schedule_expression = "rate(1 minutes)"
 }
 
-resource "aws_cloudwatch_event_target" "check_foo_every_one_minute" {
+
+##### This attaches the cluodwatch event rule with lambda.
+resource "aws_cloudwatch_event_target" "trigger_lambda" {
   rule      = "${aws_cloudwatch_event_rule.every_thousand_minutes.name}"
   target_id = "lambda"
   arn       = "${aws_lambda_function.extract_data_lambda_func.arn}"
 }
 
-resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_foo" {
-  statement_id  = "AllowExecutionFromCloudWatch"
-  action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.extract_data_lambda_func.function_name}"
-  principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.every_thousand_minutes.arn}"
-}
+
+
+  
