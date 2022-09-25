@@ -67,6 +67,6 @@ class Secret:
 
 
 
-# if __name__ == "__main__":
-#     secret = Secret()
-#     print(secret.client_id)
+if __name__ == "__main__":
+    secret = Secret()
+    print(secret.client_id)
