@@ -1,4 +1,4 @@
-spotipy == 2.20
+spotipy
 boto3 == 1.24
 botocore == 1.27
 pypi-json == 0.3
