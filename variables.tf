@@ -30,4 +30,9 @@ variable "aws_access_key_id" {
   
 }
 
+variable "env" {
+   type        = string
+  
+}
+
  
