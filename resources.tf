@@ -115,7 +115,7 @@ data "aws_secretsmanager_secret" "spotify_credential_secret" {
 
 ###### declaring cloudwatch event rule with a schedule
 resource "aws_cloudwatch_event_rule" "every_thousand_minutes" {
-  name                = "every-Thousand-minutes_${var.env}"
+  name                = "every_thousand_minutes_${var.env}"
   description         = "Fires every thousand minutes"
   schedule_expression = "rate(1 minutes)"
 }
