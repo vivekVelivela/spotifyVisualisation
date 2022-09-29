@@ -6,6 +6,15 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_lambda" {
   source_arn    = "${aws_cloudwatch_event_rule.every_thousand_minutes.arn}"
 }
 
+# Declare a new API Gateway REST API
+resource "aws_api_gateway_rest_api" "rest_api" {
+  # The name of the REST API
+  name = "test_api_${var.env}"
+
+  # An optional description of the REST API
+  description = "A Prototype REST API for testing"
+}
+
 
 # Set permissions on the lambda function, allowing API Gateway to invoke the function
 resource "aws_lambda_permission" "allow_api_gateway" {
