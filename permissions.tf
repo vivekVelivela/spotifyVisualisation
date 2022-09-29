@@ -13,7 +13,7 @@ resource "aws_lambda_permission" "allow_api_gateway" {
   action = "lambda:InvokeFunction"
 
   # The name of the lambda function to attach this permission to
-  function_name = "${aws_lambda_function.extract_data_lambda_func.arn}"
+  function_name = "${aws_lambda_function.extract_data_lambda_func.function_name}"
 
   # An optional identifier for the permission statement
   statement_id = "AllowExecutionFromApiGateway"
@@ -23,5 +23,5 @@ resource "aws_lambda_permission" "allow_api_gateway" {
 
   # /*/*/* sets this permission for all stages, methods, and resource paths in API Gateway to the lambda
   # function. - https://bit.ly/2NbT5V5
-  source_arn = "${aws_api_gateway_rest_api.roman-numeral-api.execution_arn}/*/*/*"
+  source_arn = "${aws_api_gateway_rest_api.roman-numeral-api.execution_arn}/*/*"
 }
