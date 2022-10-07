@@ -57,7 +57,7 @@ resource "aws_api_gateway_deployment" "rest_api" {
     "aws_api_gateway_integration.lambda_root",
   ]
 
-  rest_api_id = "${aws_api_gateway_rest_api.example.id}"
+  rest_api_id = "${aws_api_gateway_rest_api.rest_api.id}"
   stage_name  = "test"
 }
 
