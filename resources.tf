@@ -133,7 +133,7 @@ resource "aws_cloudwatch_event_target" "trigger_lambda" {
 resource "aws_lambda_provisioned_concurrency_config" "extract_data_lambda_func_concurrency_provision" {
   function_name                     = aws_lambda_function.extract_data_lambda_func.function_name
   provisioned_concurrent_executions = 1
-  qualifier                         = aws_lambda_function.extract_data_lambda_func.arn
+  qualifier                         = aws_lambda_function.extract_data_lambda_func.version
 }
 
   
