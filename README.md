@@ -14,6 +14,6 @@ As soon as a new commit is made to Data.js in spotifyFrontend, AWS Amplify updat
 This architecture has its own disadvantages.For example commiting data into github repo is not a standard practice but this is still a v1. Many components of this architecture can be improved. API gateway can be used to fetch and visualise the data in the frontend. A database can be used to store the collected data and query the database to view historic results instead of calling Spotify API everytime.
 
 Question? What does V2 of this architecture include?
-Definitely a Database, API. further I am aiming to collect more data and generate my own insights and predictions on varios tracks, playlists and artists.
+Definitely a Database, API. further I am aiming to collect more data and generate my own insights and predictions on varios tracks and their popularity based on automated analysis tasks or using machine Learning services in AWS.
 
 
